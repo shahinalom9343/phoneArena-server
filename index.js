@@ -23,12 +23,28 @@ async function run() {
   try {
     // await client.connect();
     const userCollection = client.db("phoneArena").collection("users");
+    const productCollection = client.db("phoneArena").collection("products");
+
     // post a new user
     app.post("/users", async (req, res) => {
       const user = req.body;
       const newUser = await userCollection.insertOne(user);
       res.send(newUser);
     });
+
+    // get all products
+    app.get("/products", async (req, res) => {
+      const pages = parseInt(req.query.pages);
+      const size = parseInt(req.query.size);
+      console.log("pagination query", pages, size);
+      const result = await productCollection
+        .find()
+        .skip(pages * size)
+        .limit(size)
+        .toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
