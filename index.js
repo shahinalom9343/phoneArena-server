@@ -22,6 +22,13 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // await client.connect();
+    const userCollection = client.db("phoneArena").collection("users");
+    // post a new user
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const newUser = await userCollection.insertOne(user);
+      res.send(newUser);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
