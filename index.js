@@ -36,11 +36,15 @@ async function run() {
     app.get("/products", async (req, res) => {
       const pages = parseInt(req.query.pages);
       const size = parseInt(req.query.size);
-
+      const filter = req.query;
       const query = {
-        title: { $regex: "search", $options: "i" },
+        // title: { $regex: "search", $options: "i" },
       };
-      const options = {};
+      const options = {
+        sort: {
+          Price: filter.sort === "asc" ? 1 : -1,
+        },
+      };
       const result = await productCollection
         .find(query, options)
         .skip(pages * size)
