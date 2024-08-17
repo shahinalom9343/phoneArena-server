@@ -36,9 +36,13 @@ async function run() {
     app.get("/products", async (req, res) => {
       const pages = parseInt(req.query.pages);
       const size = parseInt(req.query.size);
-      console.log("pagination query", pages, size);
+
+      const query = {
+        title: { $regex: "search", $options: "i" },
+      };
+      const options = {};
       const result = await productCollection
-        .find()
+        .find(query, options)
         .skip(pages * size)
         .limit(size)
         .toArray();
